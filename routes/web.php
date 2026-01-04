@@ -21,6 +21,7 @@ Route::group([
     Route::put('/keys/{id}', [TranslationController::class, 'updateKey'])->name('glosa.api.keys.update');
     Route::delete('/keys/{id}', [TranslationController::class, 'destroyKey'])->name('glosa.api.keys.destroy');
     Route::post('/import', [TranslationController::class, 'import'])->name('glosa.api.import');
+    Route::get('/export', [TranslationController::class, 'export'])->name('glosa.api.export');
 });
 
 if (config('glosa.enable_public_api')) {

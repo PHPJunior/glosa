@@ -189,7 +189,7 @@ class TranslationController extends Controller
             return response()->json(['message' => 'Invalid JSON file'], 422);
         }
 
-        $flattened = \Illuminate\Support\Arr::dot($json);
+        $flattened = Arr::dot($json);
 
         foreach ($flattened as $key => $value) {
             if (is_array($value)) {
@@ -244,5 +244,40 @@ class TranslationController extends Controller
         }
 
         return response()->json($translations);
+    }
+    public function export(Request $request)
+    {
+        $request->validate([
+            'locale' => 'required|exists:glosa_locales,code',
+            'nested' => 'boolean'
+        ]);
+
+        $locale = Locale::where('code', $request->locale)->firstOrFail();
+
+        $translations = TranslationValue::where('locale_id', $locale->id)
+            ->with('translationKey')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                $key = $item->translationKey;
+                $fullKey = $key->group === '*' ? $key->key : "{$key->group}.{$key->key}";
+                return [$fullKey => $item->value];
+            });
+
+        $data = $translations->toArray();
+
+        // Check if nested is requested (default to config if not provided)
+        $shouldNest = $request->has('nested')
+            ? $request->boolean('nested')
+            : config('glosa.public_api_nested', true);
+
+        if ($shouldNest) {
+            $data = Arr::undot($data);
+        }
+
+        $filename = "{$locale->code}.json";
+
+        return response()->streamDownload(function () use ($data) {
+            echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }, $filename, ['Content-Type' => 'application/json']);
     }
 }
