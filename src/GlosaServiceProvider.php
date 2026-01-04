@@ -1,0 +1,34 @@
+<?php
+
+namespace PhpJunior\Glosa;
+
+use Illuminate\Support\ServiceProvider;
+
+class GlosaServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap the application services.
+     */
+    public function boot()
+    {
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'glosa');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
+        $this->publishes([
+            __DIR__ . '/../config/glosa.php' => config_path('glosa.php'),
+        ], 'glosa-config');
+
+        $this->publishes([
+            __DIR__ . '/../resources/views' => resource_path('views/vendor/glosa'),
+        ], 'glosa-views');
+    }
+
+    public function register()
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/glosa.php',
+            'glosa'
+        );
+    }
+}

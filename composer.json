@@ -1,0 +1,48 @@
+{
+    "name": "php-junior/glosa",
+    "description": "A standalone Laravel Translation Management System package.",
+    "keywords": [
+        "laravel",
+        "translation",
+        "tms",
+        "ui",
+        "glosa"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nyi Nyi Lwin",
+            "email": "nyinyilwin1992@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0",
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpJunior\\Glosa\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpJunior\\Glosa\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "PhpJunior\\Glosa\\GlosaServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    }
+}
