@@ -61,4 +61,15 @@ return [
     |
     */
     'public_api_nested' => env('GLOSA_PUBLIC_API_NESTED', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database Translation Loading
+    |--------------------------------------------------------------------------
+    |
+    | If enabled, the package will automatically load translations from the
+    | database when using Laravel's translation functions like __('key').
+    |
+    */
+    'enable_db_loading' => env('GLOSA_ENABLE_DB_LOADING', true),
 ];

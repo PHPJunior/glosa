@@ -30,5 +30,11 @@ class GlosaServiceProvider extends ServiceProvider
             __DIR__ . '/../config/glosa.php',
             'glosa'
         );
+
+        if (config('glosa.enable_db_loading', true)) {
+            $this->app->extend('translation.loader', function ($service, $app) {
+                return new TranslationLoader($app['files'], $app['path.lang']);
+            });
+        }
     }
 }

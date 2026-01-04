@@ -1,4 +1,4 @@
-# Glosa - Laravel Translation Management System
+# Glosa
 
 A standalone Laravel Translation Management System package. Managed your translations with a beautiful UI.
 
@@ -67,6 +67,30 @@ GLOSA_PUBLIC_API_NESTED=true
 -   `GLOSA_PUBLIC_API_NESTED`:
     -   `true` (default): Returns nested JSON (e.g., `{"messages": {"welcome": "Hello"}}`)
     -   `false`: Returns dot-notation JSON (e.g., `{"messages.welcome": "Hello"}`)
+
+### Export Feature
+
+You can export translations for a specific locale as a JSON file via the UI or the export endpoint.
+
+**Endpoint:** `GET /glosa/export?locale={locale}&nested={boolean}`
+
+-   `locale`: The locale code (e.g., `en`).
+-   `nested`: `1` for nested JSON, `0` for dot notation.
+
+### Laravel Translation Loader
+
+Glosa integrates seamlessly with Laravel's native translation system. You can use `__('key')` or `trans('key')` to fetch translations directly from the database.
+
+**How it works:**
+The package overrides the default translation loader. It attempts to find the translation in your local language files first (for performance). If not found, or if you want to override files with database values, it merges the database translations.
+
+**Configuration:**
+
+By default, this feature is enabled. You can disable it in `config/glosa.php` or `.env`:
+
+```dotenv
+GLOSA_ENABLE_DB_LOADING=true
+```
 
 ### Usage
 
