@@ -13,7 +13,7 @@ class Authorize
             return $next($request);
         }
 
-        if (Gate::allows('viewGlosa', [$request->user()])) {
+        if (Gate::allows('viewGlosa')) {
             return $next($request);
         }
 
