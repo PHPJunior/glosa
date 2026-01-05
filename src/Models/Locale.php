@@ -3,6 +3,7 @@
 namespace PhpJunior\Glosa\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Locale extends Model
 {
@@ -18,7 +19,10 @@ class Locale extends Model
         'is_default' => 'boolean',
     ];
 
-    public function values()
+    /**
+     * @return HasMany
+     */
+    public function values(): HasMany
     {
         return $this->hasMany(TranslationValue::class);
     }

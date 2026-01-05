@@ -2,7 +2,12 @@
 
 namespace PhpJunior\Glosa\Http\Controllers;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
 use PhpJunior\Glosa\Models\Locale;
@@ -10,19 +15,30 @@ use PhpJunior\Glosa\Models\TranslationKey;
 use PhpJunior\Glosa\Models\TranslationValue;
 use PhpJunior\Glosa\Http\Resources\TranslationKeyResource;
 use PhpJunior\Glosa\Http\Resources\LocaleResource;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TranslationController extends Controller
 {
+    /**
+     * @return Factory|View|Application|\Illuminate\View\View|object
+     */
     public function index()
     {
         return view('glosa::index');
     }
 
+    /**
+     * @return mixed
+     */
     public function groups()
     {
         return TranslationKey::select('group')->distinct()->pluck('group');
     }
 
+    /**
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
     public function grouped(Request $request)
     {
         $limit = $request->input('limit', 20);
@@ -56,6 +72,10 @@ class TranslationController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function updateValue(Request $request)
     {
         $data = $request->validate([
@@ -79,6 +99,10 @@ class TranslationController extends Controller
         return response()->json(['status' => 'success']);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function storeLocale(Request $request)
     {
         $validated = $request->validate([
@@ -99,6 +123,11 @@ class TranslationController extends Controller
         return response()->json(['status' => 'success', 'locale' => new LocaleResource($locale)]);
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
     public function updateLocale(Request $request, $id)
     {
         $locale = Locale::findOrFail($id);
@@ -121,6 +150,10 @@ class TranslationController extends Controller
         return response()->json(['status' => 'success', 'locale' => new LocaleResource($locale)]);
     }
 
+    /**
+     * @param $id
+     * @return JsonResponse
+     */
     public function destroyLocale($id)
     {
         $locale = Locale::findOrFail($id);
@@ -132,6 +165,10 @@ class TranslationController extends Controller
         return response()->json(['status' => 'success']);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function storeKey(Request $request)
     {
         $validated = $request->validate([
@@ -147,6 +184,11 @@ class TranslationController extends Controller
         return response()->json(['status' => 'success', 'key' => new TranslationKeyResource($key)]);
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
     public function updateKey(Request $request, $id)
     {
         $key = TranslationKey::findOrFail($id);
@@ -164,6 +206,10 @@ class TranslationController extends Controller
         return response()->json(['status' => 'success', 'key' => new TranslationKeyResource($key)]);
     }
 
+    /**
+     * @param $id
+     * @return JsonResponse
+     */
     public function destroyKey($id)
     {
         $key = TranslationKey::findOrFail($id);
@@ -174,6 +220,10 @@ class TranslationController extends Controller
         return response()->json(['status' => 'success']);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function import(Request $request)
     {
         $request->validate([
@@ -226,25 +276,10 @@ class TranslationController extends Controller
         return response()->json(['status' => 'success', 'count' => count($flattened)]);
     }
 
-    public function publicTranslations($locale)
-    {
-        $localeModel = Locale::where('code', $locale)->firstOrFail();
-
-        $translations = TranslationValue::where('locale_id', $localeModel->id)
-            ->with('translationKey')
-            ->get()
-            ->mapWithKeys(function ($item) {
-                $key = $item->translationKey;
-                $fullKey = $key->group === '*' ? $key->key : "{$key->group}.{$key->key}";
-                return [$fullKey => $item->value];
-            });
-
-        if (config('glosa.public_api_nested', true)) {
-            return response()->json(Arr::undot($translations->toArray()));
-        }
-
-        return response()->json($translations);
-    }
+    /**
+     * @param Request $request
+     * @return StreamedResponse
+     */
     public function export(Request $request)
     {
         $request->validate([
@@ -279,5 +314,43 @@ class TranslationController extends Controller
         return response()->streamDownload(function () use ($data) {
             echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }, $filename, ['Content-Type' => 'application/json']);
+    }
+
+    /**
+     * @param $locale
+     * @return JsonResponse
+     */
+    public function publicTranslations($locale)
+    {
+        $localeModel = Locale::where('code', $locale)->firstOrFail();
+        $defaultLocale = Locale::where('is_default', true)->first();
+
+        // Get all translation keys with values for both requested and default locale
+        $translations = TranslationKey::with([
+            'values' => function ($query) use ($localeModel, $defaultLocale) {
+                $query->whereIn('locale_id', array_filter([
+                    $localeModel->id,
+                    $defaultLocale?->id
+                ]));
+            }
+        ])->get()->mapWithKeys(function ($key) use ($localeModel, $defaultLocale) {
+            $fullKey = $key->group === '*' ? $key->key : "{$key->group}.{$key->key}";
+
+            // Find value for requested locale
+            $value = $key->values->firstWhere('locale_id', $localeModel->id)?->value;
+
+            // Fallback to default locale if value is empty or null
+            if (empty($value) && $defaultLocale) {
+                $value = $key->values->firstWhere('locale_id', $defaultLocale->id)?->value;
+            }
+
+            return [$fullKey => $value ?? ''];
+        });
+
+        if (config('glosa.public_api_nested', true)) {
+            return response()->json(Arr::undot($translations->toArray()));
+        }
+
+        return response()->json($translations);
     }
 }
