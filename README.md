@@ -3,8 +3,11 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/php-junior/glosa.svg?style=flat-square)](https://packagist.org/packages/php-junior/glosa)
 [![Total Downloads](https://img.shields.io/packagist/dt/php-junior/glosa.svg?style=flat-square)](https://packagist.org/packages/php-junior/glosa)
 
+![Glosa UI](art/1.png)
 
 A standalone Laravel Translation Management System package. Managed your translations with a beautiful UI.
+
+
 
 ## Installation
 
