@@ -6,7 +6,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TranslationKeyResource extends JsonResource
 {
-    public function toArray($request)
+    /**
+     * @param $request
+     * @return array
+     */
+    public function toArray($request): array
     {
         $values = [];
         foreach ($this->values as $value) {

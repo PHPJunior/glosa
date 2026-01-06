@@ -65,7 +65,7 @@ class TranslationLoader extends FileLoader
                 ->get();
 
             // Group values by translation key
-            $valuesByKey = $values->groupBy('translation_key_id');
+            $valuesByKey = $values->groupBy('key_id');
 
             return $translationKeys->mapWithKeys(function ($key) use ($localeModel, $defaultLocale, $valuesByKey) {
                 $keyValues = $valuesByKey->get($key->id, collect());

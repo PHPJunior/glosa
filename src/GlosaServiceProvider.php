@@ -9,7 +9,7 @@ class GlosaServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      */
-    public function boot()
+    public function boot(): void
     {
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'glosa');
@@ -24,7 +24,10 @@ class GlosaServiceProvider extends ServiceProvider
         ], 'glosa-views');
     }
 
-    public function register()
+    /**
+     * @return void
+     */
+    public function register(): void
     {
         $this->mergeConfigFrom(
             __DIR__ . '/../config/glosa.php',

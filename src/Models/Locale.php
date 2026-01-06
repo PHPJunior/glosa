@@ -26,4 +26,19 @@ class Locale extends Model
     {
         return $this->hasMany(TranslationValue::class);
     }
+
+    /**
+     * @param int|null $exceptId
+     * @return void
+     */
+    public static function resetDefault(?int $exceptId = null): void
+    {
+        $query = static::query();
+
+        if ($exceptId) {
+            $query->where('id', '!=', $exceptId);
+        }
+
+        $query->update(['is_default' => false]);
+    }
 }
