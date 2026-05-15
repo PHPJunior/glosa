@@ -16,6 +16,8 @@ class TestCase extends Orchestra
 
     protected function defineEnvironment($app)
     {
+        $app['config']->set('app.key', 'base64:fH6uI7/Z4f4v6x4k9U6mY3n2p5r8v/w8x/z0y1z2w3q=');
+
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [

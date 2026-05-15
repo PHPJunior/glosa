@@ -6,13 +6,14 @@ use PhpJunior\Glosa\Tests\TestCase;
 use PhpJunior\Glosa\Models\Locale;
 use PhpJunior\Glosa\Models\TranslationKey;
 use PhpJunior\Glosa\Models\TranslationValue;
+use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function it_can_fetch_grouped_translations()
     {
         // Setup data
@@ -35,7 +36,7 @@ class ApiTest extends TestCase
             ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_locale()
     {
         $response = $this->postJson(route('glosa.api.locales.store'), [
@@ -49,7 +50,7 @@ class ApiTest extends TestCase
         $this->assertDatabaseHas('glosa_locales', ['code' => 'fr', 'is_default' => true]);
     }
 
-    /** @test */
+    #[Test]
     public function it_ensures_only_one_default_locale()
     {
         Locale::create(['code' => 'en', 'is_default' => true]);
@@ -63,7 +64,7 @@ class ApiTest extends TestCase
         $this->assertDatabaseHas('glosa_locales', ['code' => 'fr', 'is_default' => true]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_update_locale()
     {
         $locale = Locale::create(['code' => 'de', 'name' => 'German']);
@@ -77,7 +78,7 @@ class ApiTest extends TestCase
         $this->assertDatabaseHas('glosa_locales', ['id' => $locale->id, 'code' => 'de-DE', 'is_default' => true]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_delete_locale()
     {
         $locale = Locale::create(['code' => 'it', 'name' => 'Italian']);
@@ -91,7 +92,7 @@ class ApiTest extends TestCase
         $this->assertDatabaseMissing('glosa_values', ['locale_id' => $locale->id]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_key()
     {
         $response = $this->postJson("/glosa/keys", [
@@ -108,7 +109,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_update_translation_value()
     {
         $locale = Locale::create(['code' => 'en']);
@@ -130,7 +131,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_rename_key()
     {
         $key = TranslationKey::create(['group' => 'messages', 'key' => 'old_key']);
@@ -150,7 +151,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_delete_key()
     {
         $key = TranslationKey::create(['group' => 'messages', 'key' => 'to_delete']);
@@ -169,7 +170,7 @@ class ApiTest extends TestCase
         $this->assertDatabaseMissing('glosa_keys', ['id' => $key->id]);
         $this->assertDatabaseMissing('glosa_values', ['key_id' => $key->id]);
     }
-    /** @test */
+    #[Test]
     public function it_can_import_json_file()
     {
         $locale = Locale::create(['code' => 'en', 'name' => 'English']);

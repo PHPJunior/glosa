@@ -5,11 +5,12 @@ namespace PhpJunior\Glosa\Tests\Feature;
 use Illuminate\Support\Facades\Gate;
 use PhpJunior\Glosa\Tests\TestCase;
 use PhpJunior\Glosa\Http\Middleware\Authorize;
+use PHPUnit\Framework\Attributes\Test;
 use Orchestra\Testbench\Http\Middleware\Authenticate;
 
 class AuthorizeTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_allows_access_in_local_environment()
     {
         $this->app['env'] = 'local';
@@ -18,7 +19,7 @@ class AuthorizeTest extends TestCase
             ->assertStatus(200);
     }
 
-    /** @test */
+    #[Test]
     public function it_denies_access_in_production_if_gate_is_undefined()
     {
         $this->app['env'] = 'production';
@@ -29,7 +30,7 @@ class AuthorizeTest extends TestCase
             ->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function it_denies_access_in_production_if_gate_returns_false()
     {
         $this->app['env'] = 'production';
@@ -42,7 +43,7 @@ class AuthorizeTest extends TestCase
             ->assertStatus(403);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_access_in_production_if_gate_returns_true()
     {
         $this->app['env'] = 'production';

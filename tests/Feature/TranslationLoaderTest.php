@@ -7,6 +7,7 @@ use PhpJunior\Glosa\Models\TranslationKey;
 use PhpJunior\Glosa\Models\TranslationValue;
 use PhpJunior\Glosa\Tests\TestCase;
 use PhpJunior\Glosa\TranslationLoader;
+use PHPUnit\Framework\Attributes\Test;
 
 class TranslationLoaderTest extends TestCase
 {
@@ -17,7 +18,7 @@ class TranslationLoaderTest extends TestCase
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
     }
 
-    /** @test */
+    #[Test]
     public function it_uses_the_glosa_translation_loader()
     {
         $loader = app('translation.loader');
@@ -30,7 +31,7 @@ class TranslationLoaderTest extends TestCase
         $this->assertInstanceOf(TranslationLoader::class, $loader);
     }
 
-    /** @test */
+    #[Test]
     public function it_loads_translations_from_database()
     {
         // 1. Setup Locale
@@ -64,7 +65,7 @@ class TranslationLoaderTest extends TestCase
         $this->assertEquals('Hello from Database', __('messages.welcome'));
     }
 
-    /** @test */
+    #[Test]
     public function it_falls_back_to_file_if_not_in_database()
     {
         // 1. Ensure sure DB is empty for this key
