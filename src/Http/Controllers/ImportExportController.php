@@ -5,12 +5,15 @@ namespace PhpJunior\Glosa\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use InvalidArgumentException;
 use PhpJunior\Glosa\Actions\ImportTranslationsAction;
 use PhpJunior\Glosa\Queries\ExportTranslationsQuery;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ImportExportController extends Controller
 {
     protected ImportTranslationsAction $importTranslationsAction;
+
     protected ExportTranslationsQuery $exportTranslationsQuery;
 
     public function __construct(
@@ -21,37 +24,38 @@ class ImportExportController extends Controller
         $this->exportTranslationsQuery = $exportTranslationsQuery;
     }
 
-    public function import(Request $request)
+    public function import(Request $request): JsonResponse
     {
-        $request->validate([
-            'locale' => 'required|exists:glosa_locales,code',
+        $validated = $request->validate([
+            'locale' => 'required|string|exists:glosa_locales,code',
             'file' => 'required|file|mimetypes:application/json,text/plain',
         ]);
 
         try {
             $count = $this->importTranslationsAction->execute(
-                $request->locale,
+                $validated['locale'],
                 $request->file('file')->getRealPath()
             );
+
             return response()->json(['status' => 'success', 'count' => $count]);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }
     }
 
-    public function export(Request $request)
+    public function export(Request $request): StreamedResponse
     {
-        $request->validate([
-            'locale' => 'required|exists:glosa_locales,code',
-            'nested' => 'boolean'
+        $validated = $request->validate([
+            'locale' => 'required|string|exists:glosa_locales,code',
+            'nested' => 'boolean',
         ]);
 
         $data = $this->exportTranslationsQuery->get(
-            $request->locale,
-            $request->boolean('nested', null) // Pass null if not present to let query invoke config default
+            $validated['locale'],
+            $request->boolean('nested', null)
         );
 
-        $filename = "{$request->locale}.json";
+        $filename = "{$validated['locale']}.json";
 
         return response()->streamDownload(function () use ($data) {
             echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);

@@ -4,9 +4,7 @@ namespace PhpJunior\Glosa\Tests\Feature;
 
 use Illuminate\Support\Facades\Gate;
 use PhpJunior\Glosa\Tests\TestCase;
-use PhpJunior\Glosa\Http\Middleware\Authorize;
 use PHPUnit\Framework\Attributes\Test;
-use Orchestra\Testbench\Http\Middleware\Authenticate;
 
 class AuthorizeTest extends TestCase
 {

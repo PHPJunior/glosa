@@ -6,11 +6,6 @@ use PhpJunior\Glosa\Models\TranslationKey;
 
 class UpdateKeyAction
 {
-    /**
-     * @param int $id
-     * @param array $data
-     * @return TranslationKey
-     */
     public function execute(int $id, array $data): TranslationKey
     {
         $key = TranslationKey::findOrFail($id);

@@ -16,10 +16,6 @@ class TranslationValueController extends Controller
         $this->updateTranslationValueAction = $updateTranslationValueAction;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function update(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -31,7 +27,7 @@ class TranslationValueController extends Controller
         $this->updateTranslationValueAction->execute([
             'key_id' => $validated['key_id'],
             'locale' => $validated['locale'],
-            'value' => $validated['value']
+            'value' => $validated['value'],
         ]);
 
         return response()->json(['status' => 'success']);

@@ -6,10 +6,6 @@ use PhpJunior\Glosa\Models\Locale;
 
 class CreateLocaleAction
 {
-    /**
-     * @param array $data
-     * @return Locale
-     */
     public function execute(array $data): Locale
     {
         if ($data['is_default'] ?? false) {

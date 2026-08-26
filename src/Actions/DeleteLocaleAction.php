@@ -7,10 +7,6 @@ use PhpJunior\Glosa\Models\TranslationValue;
 
 class DeleteLocaleAction
 {
-    /**
-     * @param int $id
-     * @return void
-     */
     public function execute(int $id): void
     {
         $locale = Locale::findOrFail($id);

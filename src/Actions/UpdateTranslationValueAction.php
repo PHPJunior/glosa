@@ -7,10 +7,6 @@ use PhpJunior\Glosa\Models\TranslationValue;
 
 class UpdateTranslationValueAction
 {
-    /**
-     * @param array $data
-     * @return void
-     */
     public function execute(array $data): void
     {
         $locale = Locale::where('code', $data['locale'])->firstOrFail();
@@ -18,7 +14,7 @@ class UpdateTranslationValueAction
         TranslationValue::updateOrCreate(
             [
                 'locale_id' => $locale->id,
-                'key_id' => $data['key_id']
+                'key_id' => $data['key_id'],
             ],
             ['value' => $data['value']]
         );

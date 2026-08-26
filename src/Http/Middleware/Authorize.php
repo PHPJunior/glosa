@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Gate;
 class Authorize
 {
     /**
-     * @param $request
-     * @param Closure $next
      * @return mixed|void
      */
     public function handle($request, Closure $next)

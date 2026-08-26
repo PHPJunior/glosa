@@ -4,10 +4,10 @@ namespace PhpJunior\Glosa\Http\Controllers;
 
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
 use PhpJunior\Glosa\Queries\GetGroupedTranslationsQuery;
-use Illuminate\Http\Request;
 
 class TranslationController extends Controller
 {
@@ -27,7 +27,6 @@ class TranslationController extends Controller
     }
 
     /**
-     * @param Request $request
      * @return AnonymousResourceCollection
      */
     public function grouped(Request $request)

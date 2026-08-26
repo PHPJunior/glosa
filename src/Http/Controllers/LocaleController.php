@@ -13,7 +13,9 @@ use PhpJunior\Glosa\Http\Resources\LocaleResource;
 class LocaleController extends Controller
 {
     protected CreateLocaleAction $createLocaleAction;
+
     protected UpdateLocaleAction $updateLocaleAction;
+
     protected DeleteLocaleAction $deleteLocaleAction;
 
     public function __construct(
@@ -26,18 +28,18 @@ class LocaleController extends Controller
         $this->deleteLocaleAction = $deleteLocaleAction;
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'locale' => 'required|string|max:10|unique:glosa_locales,code',
-            'is_default' => 'boolean'
+            'is_default' => 'boolean',
         ]);
 
         // Map 'locale' input to 'code' and 'name' for the action
         $data = [
             'code' => $validated['locale'],
             'name' => $validated['locale'],
-            'is_default' => $request->boolean('is_default')
+            'is_default' => $request->boolean('is_default'),
         ];
 
         $locale = $this->createLocaleAction->execute($data);
@@ -45,17 +47,17 @@ class LocaleController extends Controller
         return response()->json(['status' => 'success', 'locale' => new LocaleResource($locale)]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): JsonResponse
     {
         $validated = $request->validate([
-            'code' => 'required|string|max:10|unique:glosa_locales,code,' . $id,
-            'is_default' => 'boolean'
+            'code' => 'required|string|max:10|unique:glosa_locales,code,'.$id,
+            'is_default' => 'boolean',
         ]);
 
         $data = [
             'code' => $validated['code'],
             'name' => $validated['code'], // Assuming name follows code for now as per original
-            'is_default' => $request->boolean('is_default')
+            'is_default' => $request->boolean('is_default'),
         ];
 
         $locale = $this->updateLocaleAction->execute($id, $data);
@@ -63,7 +65,7 @@ class LocaleController extends Controller
         return response()->json(['status' => 'success', 'locale' => new LocaleResource($locale)]);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $this->deleteLocaleAction->execute($id);
 

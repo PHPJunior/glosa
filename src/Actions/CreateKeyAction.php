@@ -6,10 +6,6 @@ use PhpJunior\Glosa\Models\TranslationKey;
 
 class CreateKeyAction
 {
-    /**
-     * @param array $data
-     * @return TranslationKey
-     */
     public function execute(array $data): TranslationKey
     {
         return TranslationKey::firstOrCreate([

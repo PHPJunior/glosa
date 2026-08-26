@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glosa TMS</title>
     <!-- TailwindCSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -34,17 +34,6 @@
 
         [v-cloak] {
             display: none;
-        }
-
-        .toast-enter-active,
-        .toast-leave-active {
-            transition: all 0.3s ease;
-        }
-
-        .toast-enter-from,
-        .toast-leave-to {
-            opacity: 0;
-            transform: translateX(30px);
         }
 
         .toast-enter-active,

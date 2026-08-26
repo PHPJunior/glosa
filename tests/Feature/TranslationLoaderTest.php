@@ -15,18 +15,13 @@ class TranslationLoaderTest extends TestCase
     {
         parent::setUp();
 
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
     }
 
     #[Test]
     public function it_uses_the_glosa_translation_loader()
     {
         $loader = app('translation.loader');
-
-        // Debug output to see what we actually got
-        if (!($loader instanceof TranslationLoader)) {
-            fwrite(STDERR, "Loaded Loader Class: " . get_class($loader) . "\n");
-        }
 
         $this->assertInstanceOf(TranslationLoader::class, $loader);
     }
@@ -38,7 +33,7 @@ class TranslationLoaderTest extends TestCase
         $locale = Locale::create([
             'code' => 'en',
             'name' => 'English',
-            'is_default' => true
+            'is_default' => true,
         ]);
 
         // 2. Setup Key
@@ -70,7 +65,7 @@ class TranslationLoaderTest extends TestCase
     {
         // 1. Ensure sure DB is empty for this key
         // 2. Verify it returns the key (or file value if we had one mock)
-        // Since we don't have actual language files in this test package easily, 
+        // Since we don't have actual language files in this test package easily,
         // it usually returns the key if not found.
 
         app()->setLocale('en');

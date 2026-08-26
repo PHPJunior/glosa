@@ -19,18 +19,11 @@ class Locale extends Model
         'is_default' => 'boolean',
     ];
 
-    /**
-     * @return HasMany
-     */
     public function values(): HasMany
     {
         return $this->hasMany(TranslationValue::class);
     }
 
-    /**
-     * @param int|null $exceptId
-     * @return void
-     */
     public static function resetDefault(?int $exceptId = null): void
     {
         $query = static::query();
