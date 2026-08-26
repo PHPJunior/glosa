@@ -261,7 +261,7 @@ const TranslationsView = {
 
         // Import Logic
         const showImportModal = ref(false);
-        const importData = ref({ locale: '', file: null });
+        const importData = ref({ locale: '', file: null, overwrite: true });
         const importing = ref(false);
 
         const handleFileChange = (event) => {
@@ -304,12 +304,13 @@ const TranslationsView = {
             const formData = new FormData();
             formData.append('locale', importData.value.locale);
             formData.append('file', importData.value.file);
+            formData.append('overwrite', importData.value.overwrite ? '1' : '0');
 
             try {
                 const res = await api.post('/import', formData, true); // true for multipart
                 notify(`Import successful! processed ${res.count} strings.`);
                 showImportModal.value = false;
-                importData.value = { locale: '', file: null }; // Reset
+                importData.value = { locale: '', file: null, overwrite: true }; // Reset
                 loadData(); // Reload grid
             } catch (e) {
                 // Error handled by api util usually, but just in case

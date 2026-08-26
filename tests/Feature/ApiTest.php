@@ -199,4 +199,44 @@ class ApiTest extends TestCase
         $this->assertDatabaseHas('glosa_values', ['value' => 'Welcome to Glosa']);
         $this->assertDatabaseHas('glosa_values', ['value' => 'Simple Value']);
     }
+
+    #[Test]
+    public function it_can_import_without_overwriting_existing_translations()
+    {
+        $locale = Locale::create(['code' => 'en', 'name' => 'English']);
+        $key = TranslationKey::create(['group' => 'messages', 'key' => 'welcome']);
+        TranslationValue::create([
+            'key_id' => $key->id,
+            'locale_id' => $locale->id,
+            'value' => 'Original Welcome',
+        ]);
+
+        $json = json_encode([
+            'messages' => [
+                'welcome' => 'New Welcome',
+                'goodbye' => 'Goodbye',
+            ],
+        ]);
+
+        $file = File::createWithContent('import.json', $json);
+
+        $response = $this->postJson(route('glosa.api.import'), [
+            'locale' => 'en',
+            'file' => $file,
+            'overwrite' => false,
+        ]);
+
+        $response->assertOk()
+            ->assertJson(['status' => 'success', 'count' => 2]);
+
+        $this->assertDatabaseHas('glosa_values', [
+            'key_id' => $key->id,
+            'locale_id' => $locale->id,
+            'value' => 'Original Welcome',
+        ]);
+        $this->assertDatabaseHas('glosa_values', [
+            'locale_id' => $locale->id,
+            'value' => 'Goodbye',
+        ]);
+    }
 }
