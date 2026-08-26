@@ -29,12 +29,14 @@ class ImportExportController extends Controller
         $validated = $request->validate([
             'locale' => 'required|string|exists:glosa_locales,code',
             'file' => 'required|file|mimetypes:application/json,text/plain',
+            'overwrite' => 'nullable|boolean',
         ]);
 
         try {
             $count = $this->importTranslationsAction->execute(
                 $validated['locale'],
-                $request->file('file')->getRealPath()
+                $request->file('file')->getRealPath(),
+                $request->boolean('overwrite', true)
             );
 
             return response()->json(['status' => 'success', 'count' => $count]);

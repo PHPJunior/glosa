@@ -10,7 +10,7 @@ use PhpJunior\Glosa\Models\TranslationKey;
 
 class ImportTranslationsAction
 {
-    public function execute(string $localeCode, string $filePath): int
+    public function execute(string $localeCode, string $filePath, bool $overwrite = true): int
     {
         $locale = Locale::where('code', $localeCode)->firstOrFail();
 
@@ -27,7 +27,7 @@ class ImportTranslationsAction
 
         $flattened = Arr::dot($json);
 
-        return DB::transaction(function () use ($flattened, $locale) {
+        return DB::transaction(function () use ($flattened, $locale, $overwrite) {
             $count = 0;
 
             foreach ($flattened as $key => $value) {
@@ -49,14 +49,26 @@ class ImportTranslationsAction
                     'key' => $keyName,
                 ]);
 
-                $translationKey->values()->updateOrCreate(
-                    [
-                        'locale_id' => $locale->id,
-                    ],
-                    [
-                        'value' => (string) $value,
-                    ]
-                );
+                if ($overwrite) {
+                    $translationKey->values()->updateOrCreate(
+                        [
+                            'locale_id' => $locale->id,
+                        ],
+                        [
+                            'value' => (string) $value,
+                        ]
+                    );
+                } else {
+                    $translationKey->values()->firstOrCreate(
+                        [
+                            'locale_id' => $locale->id,
+                        ],
+                        [
+                            'value' => (string) $value,
+                        ]
+                    );
+                }
+
                 $count++;
             }
 

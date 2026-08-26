@@ -50,8 +50,17 @@
                                     </div>
                                 </div>
 
+                                <div class="relative flex gap-x-3 text-left items-center">
+                                    <div class="flex h-6 items-center">
+                                        <input id="overwriteExisting" v-model="importData.overwrite" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                                    </div>
+                                    <div class="text-sm leading-6">
+                                        <label for="overwriteExisting" class="font-medium text-gray-900 cursor-pointer select-none">Overwrite existing translations</label>
+                                    </div>
+                                </div>
+
                                 <!-- Warning Notice -->
-                                <div class="rounded-md bg-amber-50 p-3 ring-1 ring-inset ring-amber-500/20">
+                                <div v-if="importData.overwrite" class="rounded-md bg-amber-50 p-3 ring-1 ring-inset ring-amber-500/20">
                                     <div class="flex items-start">
                                         <div class="flex-shrink-0">
                                             <svg class="h-5 w-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
