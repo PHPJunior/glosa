@@ -8,7 +8,7 @@ use PhpJunior\Glosa\Models\TranslationValue;
 
 class ExportTranslationsQuery
 {
-    public function get(string $localeCode, bool $nested = null)
+    public function get(string $localeCode, ?bool $nested = null)
     {
         $locale = Locale::where('code', $localeCode)->firstOrFail();
 
@@ -18,6 +18,7 @@ class ExportTranslationsQuery
             ->mapWithKeys(function ($item) {
                 $key = $item->translationKey;
                 $fullKey = $key->group === '*' ? $key->key : "{$key->group}.{$key->key}";
+
                 return [$fullKey => $item->value];
             });
 

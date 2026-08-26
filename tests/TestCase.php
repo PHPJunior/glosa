@@ -2,8 +2,8 @@
 
 namespace PhpJunior\Glosa\Tests;
 
-use PhpJunior\Glosa\GlosaServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use PhpJunior\Glosa\GlosaServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -27,6 +27,6 @@ class TestCase extends Orchestra
         ]);
 
         // Ensure config is loaded if not published in test env automatically
-        $app['config']->set('glosa', require __DIR__ . '/../config/glosa.php');
+        $app['config']->set('glosa', require __DIR__.'/../config/glosa.php');
     }
 }

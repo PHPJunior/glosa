@@ -2,12 +2,13 @@
 
 namespace PhpJunior\Glosa\Tests\Feature;
 
-use PhpJunior\Glosa\Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Testing\File;
 use PhpJunior\Glosa\Models\Locale;
 use PhpJunior\Glosa\Models\TranslationKey;
 use PhpJunior\Glosa\Models\TranslationValue;
+use PhpJunior\Glosa\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ApiTest extends TestCase
 {
@@ -22,17 +23,17 @@ class ApiTest extends TestCase
         TranslationValue::create([
             'key_id' => $key->id,
             'locale_id' => $locale->id,
-            'value' => 'Welcome'
+            'value' => 'Welcome',
         ]);
 
-        $response = $this->getJson("/glosa/translations/grouped");
+        $response = $this->getJson('/glosa/translations/grouped');
 
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'group', 'key_name', 'full_key', 'values']
+                    '*' => ['id', 'group', 'key_name', 'full_key', 'values'],
                 ],
-                'locales'
+                'locales',
             ]);
     }
 
@@ -41,7 +42,7 @@ class ApiTest extends TestCase
     {
         $response = $this->postJson(route('glosa.api.locales.store'), [
             'locale' => 'fr',
-            'is_default' => true
+            'is_default' => true,
         ]);
 
         $response->assertOk()
@@ -57,7 +58,7 @@ class ApiTest extends TestCase
 
         $this->postJson(route('glosa.api.locales.store'), [
             'locale' => 'fr',
-            'is_default' => true
+            'is_default' => true,
         ]);
 
         $this->assertDatabaseHas('glosa_locales', ['code' => 'en', 'is_default' => false]);
@@ -71,7 +72,7 @@ class ApiTest extends TestCase
 
         $response = $this->putJson(route('glosa.api.locales.update', $locale->id), [
             'code' => 'de-DE',
-            'is_default' => true
+            'is_default' => true,
         ]);
 
         $response->assertOk()->assertJson(['status' => 'success']);
@@ -95,9 +96,9 @@ class ApiTest extends TestCase
     #[Test]
     public function it_can_create_key()
     {
-        $response = $this->postJson("/glosa/keys", [
+        $response = $this->postJson('/glosa/keys', [
             'group' => 'auth',
-            'key' => 'failed'
+            'key' => 'failed',
         ]);
 
         $response->assertStatus(200)
@@ -105,7 +106,7 @@ class ApiTest extends TestCase
 
         $this->assertDatabaseHas('glosa_keys', [
             'group' => 'auth',
-            'key' => 'failed'
+            'key' => 'failed',
         ]);
     }
 
@@ -115,10 +116,10 @@ class ApiTest extends TestCase
         $locale = Locale::create(['code' => 'en']);
         $key = TranslationKey::create(['group' => 'messages', 'key' => 'hello']);
 
-        $response = $this->putJson("/glosa/translations/value", [
+        $response = $this->putJson('/glosa/translations/value', [
             'key_id' => $key->id,
             'locale' => 'en',
-            'value' => 'Hello World'
+            'value' => 'Hello World',
         ]);
 
         $response->assertStatus(200)
@@ -127,7 +128,7 @@ class ApiTest extends TestCase
         $this->assertDatabaseHas('glosa_values', [
             'key_id' => $key->id,
             'locale_id' => $locale->id,
-            'value' => 'Hello World'
+            'value' => 'Hello World',
         ]);
     }
 
@@ -138,7 +139,7 @@ class ApiTest extends TestCase
 
         $response = $this->putJson("/glosa/keys/{$key->id}", [
             'group' => 'messages',
-            'key' => 'new_key'
+            'key' => 'new_key',
         ]);
 
         $response->assertStatus(200)
@@ -147,7 +148,7 @@ class ApiTest extends TestCase
         $this->assertDatabaseHas('glosa_keys', [
             'id' => $key->id,
             'group' => 'messages',
-            'key' => 'new_key'
+            'key' => 'new_key',
         ]);
     }
 
@@ -159,7 +160,7 @@ class ApiTest extends TestCase
         TranslationValue::create([
             'key_id' => $key->id,
             'locale_id' => $locale->id,
-            'value' => 'Value'
+            'value' => 'Value',
         ]);
 
         $response = $this->deleteJson("/glosa/keys/{$key->id}");
@@ -170,6 +171,7 @@ class ApiTest extends TestCase
         $this->assertDatabaseMissing('glosa_keys', ['id' => $key->id]);
         $this->assertDatabaseMissing('glosa_values', ['key_id' => $key->id]);
     }
+
     #[Test]
     public function it_can_import_json_file()
     {
@@ -177,16 +179,16 @@ class ApiTest extends TestCase
 
         $json = json_encode([
             'messages' => [
-                'welcome' => 'Welcome to Glosa'
+                'welcome' => 'Welcome to Glosa',
             ],
-            'simple_key' => 'Simple Value'
+            'simple_key' => 'Simple Value',
         ]);
 
-        $file = \Illuminate\Http\Testing\File::createWithContent('import.json', $json);
+        $file = File::createWithContent('import.json', $json);
 
         $response = $this->postJson(route('glosa.api.import'), [
             'locale' => 'en',
-            'file' => $file
+            'file' => $file,
         ]);
 
         $response->assertOk()

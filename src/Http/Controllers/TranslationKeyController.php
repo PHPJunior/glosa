@@ -14,8 +14,11 @@ use PhpJunior\Glosa\Queries\GetTranslationGroupsQuery;
 class TranslationKeyController extends Controller
 {
     protected GetTranslationGroupsQuery $getTranslationGroupsQuery;
+
     protected CreateKeyAction $createKeyAction;
+
     protected UpdateKeyAction $updateKeyAction;
+
     protected DeleteKeyAction $deleteKeyAction;
 
     public function __construct(
@@ -38,10 +41,6 @@ class TranslationKeyController extends Controller
         return $this->getTranslationGroupsQuery->get();
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -54,11 +53,6 @@ class TranslationKeyController extends Controller
         return response()->json(['status' => 'success', 'key' => new TranslationKeyResource($key)]);
     }
 
-    /**
-     * @param Request $request
-     * @param $id
-     * @return JsonResponse
-     */
     public function update(Request $request, $id): JsonResponse
     {
         $validated = $request->validate([
@@ -71,10 +65,6 @@ class TranslationKeyController extends Controller
         return response()->json(['status' => 'success', 'key' => new TranslationKeyResource($key)]);
     }
 
-    /**
-     * @param $id
-     * @return JsonResponse
-     */
     public function destroy($id): JsonResponse
     {
         $this->deleteKeyAction->execute($id);

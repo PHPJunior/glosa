@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use PhpJunior\Glosa\Http\Controllers\TranslationController;
+use PhpJunior\Glosa\Http\Controllers\ImportExportController;
 use PhpJunior\Glosa\Http\Controllers\LocaleController;
+use PhpJunior\Glosa\Http\Controllers\PublicTranslationController;
+use PhpJunior\Glosa\Http\Controllers\TranslationController;
 use PhpJunior\Glosa\Http\Controllers\TranslationKeyController;
 use PhpJunior\Glosa\Http\Controllers\TranslationValueController;
-use PhpJunior\Glosa\Http\Controllers\ImportExportController;
-use PhpJunior\Glosa\Http\Controllers\PublicTranslationController;
 
 Route::group([
     'prefix' => config('glosa.route_prefix', 'glosa'),

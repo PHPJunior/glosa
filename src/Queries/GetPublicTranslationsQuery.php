@@ -5,7 +5,6 @@ namespace PhpJunior\Glosa\Queries;
 use Illuminate\Support\Arr;
 use PhpJunior\Glosa\Models\Locale;
 use PhpJunior\Glosa\Models\TranslationKey;
-use PhpJunior\Glosa\Models\TranslationValue;
 
 class GetPublicTranslationsQuery
 {
@@ -20,9 +19,9 @@ class GetPublicTranslationsQuery
             'values' => function ($query) use ($localeModel, $defaultLocale) {
                 $query->whereIn('locale_id', array_filter([
                     $localeModel->id,
-                    $defaultLocale?->id
+                    $defaultLocale?->id,
                 ]));
-            }
+            },
         ])->get()->mapWithKeys(function ($key) use ($localeModel, $defaultLocale) {
             $fullKey = $key->group === '*' ? $key->key : "{$key->group}.{$key->key}";
 

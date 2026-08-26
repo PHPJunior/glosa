@@ -7,10 +7,6 @@ use PhpJunior\Glosa\Models\TranslationValue;
 
 class DeleteKeyAction
 {
-    /**
-     * @param int $id
-     * @return void
-     */
     public function execute(int $id): void
     {
         $key = TranslationKey::findOrFail($id);

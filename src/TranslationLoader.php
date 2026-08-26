@@ -16,13 +16,12 @@ class TranslationLoader extends FileLoader
      * @param  string  $locale
      * @param  string  $group
      * @param  string|null  $namespace
-     * @return array
      */
     public function load($locale, $group, $namespace = null): array
     {
         $fileTranslations = parent::load($locale, $group, $namespace);
 
-        if (!is_null($namespace) && $namespace !== '*') {
+        if (! is_null($namespace) && $namespace !== '*') {
             return $fileTranslations;
         }
 
@@ -33,17 +32,13 @@ class TranslationLoader extends FileLoader
 
     /**
      * Fetch translations from the database.
-     *
-     * @param string $locale
-     * @param string $group
-     * @return array
      */
     protected function getDatabaseTranslations(string $locale, string $group): array
     {
         try {
             $localeModel = Locale::where('code', $locale)->first();
 
-            if (!$localeModel) {
+            if (! $localeModel) {
                 return [];
             }
 
@@ -56,7 +51,7 @@ class TranslationLoader extends FileLoader
             $values = TranslationValue::query()
                 ->whereIn('locale_id', array_filter([
                     $localeModel->id,
-                    $defaultLocale?->id
+                    $defaultLocale?->id,
                 ]))
                 ->whereHas('translationKey', function ($query) use ($group) {
                     $query->where('group', $group);

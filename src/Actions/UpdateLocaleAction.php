@@ -6,16 +6,11 @@ use PhpJunior\Glosa\Models\Locale;
 
 class UpdateLocaleAction
 {
-    /**
-     * @param int $id
-     * @param array $data
-     * @return Locale
-     */
     public function execute(int $id, array $data): Locale
     {
         $locale = Locale::findOrFail($id);
 
-        if (($data['is_default'] ?? false) && !$locale->is_default) {
+        if (($data['is_default'] ?? false) && ! $locale->is_default) {
             Locale::resetDefault($id);
         }
 
