@@ -8,6 +8,10 @@ class GetTranslationGroupsQuery
 {
     public function get()
     {
-        return TranslationKey::select('group')->distinct()->pluck('group');
+        return TranslationKey::select('namespace', 'group')
+            ->distinct()
+            ->get()
+            ->map->qualifiedGroup()
+            ->values();
     }
 }

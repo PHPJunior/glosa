@@ -15,13 +15,12 @@ class TranslationKeyResource extends JsonResource
             }
         }
 
-        // Construct full dotted key
-        $fullKey = $this->group === '*' ? $this->key : "{$this->group}.{$this->key}";
-
         return [
             'id' => $this->id,
-            'full_key' => $fullKey,
+            'full_key' => $this->fullKey(),
+            'namespace' => $this->namespace,
             'group' => $this->group,
+            'qualified_group' => $this->qualifiedGroup(),
             'key_name' => $this->key, // 'key' is reserved in some frontend contexts or confusing, keeping 'key_name'
             'values' => $values,
             'created_at' => $this->created_at,

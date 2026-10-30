@@ -23,7 +23,7 @@ class GetPublicTranslationsQuery
                 ]));
             },
         ])->get()->mapWithKeys(function ($key) use ($localeModel, $defaultLocale) {
-            $fullKey = $key->group === '*' ? $key->key : "{$key->group}.{$key->key}";
+            $fullKey = $key->fullKey();
 
             // Find value for requested locale
             $value = $key->values->firstWhere('locale_id', $localeModel->id)?->value;

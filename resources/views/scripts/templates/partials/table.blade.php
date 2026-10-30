@@ -44,7 +44,7 @@
                 <td class="sticky left-0 z-10 bg-white group-hover:bg-gray-50 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                     <div class="flex flex-col">
                         <span class="text-indigo-600 font-mono">{{ keyData.key_name }}</span>
-                        <span class="text-xs text-gray-400">{{ keyData.group }}</span>
+                        <span class="text-xs text-gray-400">{{ keyData.qualified_group ?? keyData.group }}</span>
                     </div>
                     <!-- Row Actions -->
                     <div class="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity bg-white pl-2">

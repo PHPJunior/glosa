@@ -222,7 +222,7 @@ const TranslationsView = {
         const editingKey = ref({ id: null, group: '', key: '' });
 
         const openEditModal = (keyData) => {
-            editingKey.value = { ...keyData, key: keyData.key_name }; // Map key_name to key for the form
+            editingKey.value = { ...keyData, group: keyData.qualified_group ?? keyData.group, key: keyData.key_name }; // Map key_name to key for the form
             showEditKeyModal.value = true;
         };
 
