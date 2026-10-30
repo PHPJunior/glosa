@@ -21,11 +21,7 @@ class TranslationLoader extends FileLoader
     {
         $fileTranslations = parent::load($locale, $group, $namespace);
 
-        if (! is_null($namespace) && $namespace !== '*') {
-            return $fileTranslations;
-        }
-
-        $dbTranslations = $this->getDatabaseTranslations($locale, $group);
+        $dbTranslations = $this->getDatabaseTranslations($locale, $group, $namespace ?? '*');
 
         return array_replace_recursive($fileTranslations, $dbTranslations);
     }
@@ -33,7 +29,7 @@ class TranslationLoader extends FileLoader
     /**
      * Fetch translations from the database.
      */
-    protected function getDatabaseTranslations(string $locale, string $group): array
+    protected function getDatabaseTranslations(string $locale, string $group, string $namespace = '*'): array
     {
         try {
             $localeModel = Locale::where('code', $locale)->first();
@@ -45,7 +41,7 @@ class TranslationLoader extends FileLoader
             $defaultLocale = Locale::where('is_default', true)->first();
 
             // Get all translation keys for the group
-            $translationKeys = TranslationKey::where('group', $group)->get();
+            $translationKeys = TranslationKey::where('namespace', $namespace)->where('group', $group)->get();
 
             // Load values for both locales in one query
             $values = TranslationValue::query()
@@ -53,10 +49,7 @@ class TranslationLoader extends FileLoader
                     $localeModel->id,
                     $defaultLocale?->id,
                 ]))
-                ->whereHas('translationKey', function ($query) use ($group) {
-                    $query->where('group', $group);
-                })
-                ->with('translationKey')
+                ->whereIn('key_id', $translationKeys->modelKeys())
                 ->get();
 
             // Group values by translation key

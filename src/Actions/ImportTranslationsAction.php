@@ -44,7 +44,11 @@ class ImportTranslationsAction
                     $keyName = $key;
                 }
 
+                // Namespaced keys are exported as 'namespace::group.key'.
+                [$namespace, $group] = TranslationKey::parseGroup($group);
+
                 $translationKey = TranslationKey::firstOrCreate([
+                    'namespace' => $namespace,
                     'group' => $group,
                     'key' => $keyName,
                 ]);

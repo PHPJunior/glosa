@@ -16,10 +16,7 @@ class ExportTranslationsQuery
             ->with('translationKey')
             ->get()
             ->mapWithKeys(function ($item) {
-                $key = $item->translationKey;
-                $fullKey = $key->group === '*' ? $key->key : "{$key->group}.{$key->key}";
-
-                return [$fullKey => $item->value];
+                return [$item->translationKey->fullKey() => $item->value];
             });
 
         $data = $translations->toArray();

@@ -3,6 +3,7 @@
 namespace PhpJunior\Glosa;
 
 use Illuminate\Support\ServiceProvider;
+use PhpJunior\Glosa\Console\ImportLangCommand;
 
 class GlosaServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,12 @@ class GlosaServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/glosa'),
         ], 'glosa-views');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                ImportLangCommand::class,
+            ]);
+        }
     }
 
     public function register(): void

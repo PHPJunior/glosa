@@ -18,11 +18,14 @@ class GetGroupedTranslationsQuery
                 $search = $filters['search'];
                 $q->where(function ($sub) use ($search) {
                     $sub->where('key', 'like', "%{$search}%")
-                        ->orWhere('group', 'like', "%{$search}%");
+                        ->orWhere('group', 'like', "%{$search}%")
+                        ->orWhere('namespace', 'like', "%{$search}%");
                 });
             })
             ->when(! empty($filters['group']), function ($q) use ($filters) {
-                $q->where('group', $filters['group']);
+                [$namespace, $group] = TranslationKey::parseGroup($filters['group']);
+
+                $q->where('namespace', $namespace)->where('group', $group);
             })
             ->when(! empty($filters['missing_locale']), function ($q) use ($filters) {
                 $localeCode = $filters['missing_locale'];

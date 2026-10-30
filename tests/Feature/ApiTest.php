@@ -239,4 +239,55 @@ class ApiTest extends TestCase
             'value' => 'Goodbye',
         ]);
     }
+
+    #[Test]
+    public function it_creates_namespaced_keys_from_a_prefixed_group()
+    {
+        $locale = Locale::create(['code' => 'kr', 'name' => 'kr']);
+
+        $response = $this->postJson('/glosa/keys', ['group' => 'client::labels', 'key' => 'app_url']);
+
+        $response->assertStatus(200)
+            ->assertJsonPath('key.namespace', 'client')
+            ->assertJsonPath('key.group', 'labels')
+            ->assertJsonPath('key.qualified_group', 'client::labels')
+            ->assertJsonPath('key.full_key', 'client::labels.app_url');
+
+        $this->putJson('/glosa/translations/value', [
+            'key_id' => $response->json('key.id'),
+            'locale' => 'kr',
+            'value' => 'KR from DB',
+        ])->assertStatus(200);
+
+        app('translator')->setLoaded([]);
+        app()->setLocale('kr');
+
+        $this->assertSame('KR from DB', __('client::labels.app_url'));
+    }
+
+    #[Test]
+    public function updating_a_namespaced_key_keeps_its_namespace()
+    {
+        $key = TranslationKey::create(['namespace' => 'client', 'group' => 'labels', 'key' => 'app_url']);
+
+        $this->putJson("/glosa/keys/{$key->id}", ['group' => 'client::labels', 'key' => 'api_key'])
+            ->assertStatus(200);
+
+        $this->assertSame(['client', 'labels', 'api_key'], [
+            $key->fresh()->namespace, $key->fresh()->group, $key->fresh()->key,
+        ]);
+    }
+
+    #[Test]
+    public function groups_and_group_filter_are_namespace_aware()
+    {
+        TranslationKey::create(['group' => 'labels', 'key' => 'global']);
+        TranslationKey::create(['namespace' => 'client', 'group' => 'labels', 'key' => 'app_url']);
+
+        $this->getJson('/glosa/groups')->assertExactJson(['labels', 'client::labels']);
+
+        $this->getJson('/glosa/translations/grouped?group='.urlencode('client::labels'))
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.full_key', 'client::labels.app_url');
+    }
 }
