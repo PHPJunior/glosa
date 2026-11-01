@@ -26,11 +26,9 @@ class ImportLangDirectoryAction
      * loadTranslationsFrom($path, 'client') resolves __('client::group.key').
      * Package overrides in vendor/{namespace}/{locale}/{group}.php keep their namespace.
      *
-     * @param string $path
-     * @param array<int, string> $onlyLocales
-     * @param bool $overwrite
-     * @param string $namespace
+     * @param  array<int, string>  $onlyLocales
      * @return array<string, array{found: int, written: int}> Stats keyed by locale code.
+     *
      * @throws \Throwable
      */
     public function execute(string $path, array $onlyLocales = [], bool $overwrite = false, string $namespace = '*'): array

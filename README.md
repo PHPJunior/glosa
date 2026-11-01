@@ -6,7 +6,28 @@
 
 A standalone Laravel Translation Management System package. Managed your translations with a beautiful UI.
 
-![Glosa UI](art/1.png)
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <a href="art/1.png"><img src="art/1.png" alt="Translation grid with keys and values per locale"></a>
+      <br><sub><b>Translation grid</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <a href="art/2.png"><img src="art/2.png" alt="Add language dialog"></a>
+      <br><sub><b>Manage languages</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <a href="art/3.png"><img src="art/3.png" alt="Export translations dialog"></a>
+      <br><sub><b>Export to JSON</b></sub>
+    </td>
+    <td width="50%" align="center">
+      <a href="art/4.png"><img src="art/4.png" alt="Import translations dialog"></a>
+      <br><sub><b>Import from JSON</b></sub>
+    </td>
+  </tr>
+</table>
 
 ## Installation
 
@@ -111,6 +132,40 @@ php artisan glosa:import --overwrite
 -   Namespaced translations are supported (see [Namespaced Translations](#namespaced-translations)). If a directory is registered with `loadTranslationsFrom($path, 'client')`, its keys are stored under the `client` namespace. Use `--namespace=client` to set it explicitly.
 -   Package overrides in `lang/vendor/{namespace}/{locale}/{group}.php` are imported under their namespace.
 -   Existing values are kept unless `--overwrite` is given.
+
+### Translation Progress
+
+See how much of each locale has been translated:
+
+```bash
+php artisan glosa:progress
+```
+
+```
++--------------+------------+---------+-----------------------------+
+| Locale       | Translated | Missing | Progress                    |
++--------------+------------+---------+-----------------------------+
+| en (default) | 3 / 3      | 0       | ████████████████████ 100.0% |
+| kr           | 1 / 3      | 2       | ███████░░░░░░░░░░░░░ 33.3%  |
++--------------+------------+---------+-----------------------------+
+```
+
+```bash
+# Only specific locales
+php artisan glosa:progress --locale=kr
+
+# Only a group or namespace ("*" for global keys)
+php artisan glosa:progress --group=client::labels
+php artisan glosa:progress --namespace=client
+
+# Break progress down per group, and list the missing keys
+php artisan glosa:progress --by-group --missing
+
+# Fail (exit code 1) when any locale is below 90%, e.g. in CI
+php artisan glosa:progress --min=90
+```
+
+A key counts as translated when its value is not empty.
 
 ### Laravel Translation Loader
 
