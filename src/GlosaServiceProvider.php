@@ -4,6 +4,7 @@ namespace PhpJunior\Glosa;
 
 use Illuminate\Support\ServiceProvider;
 use PhpJunior\Glosa\Console\ImportLangCommand;
+use PhpJunior\Glosa\Console\TranslationProgressCommand;
 
 class GlosaServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,7 @@ class GlosaServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 ImportLangCommand::class,
+                TranslationProgressCommand::class,
             ]);
         }
     }
