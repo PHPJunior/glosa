@@ -62,7 +62,7 @@ class TranslationLoader extends FileLoader
                 $value = $keyValues->firstWhere('locale_id', $localeModel->id)?->value;
 
                 // Fallback to default locale if empty
-                if (empty($value) && $defaultLocale) {
+                if (($value === null || $value === '') && $defaultLocale) {
                     $value = $keyValues->firstWhere('locale_id', $defaultLocale->id)?->value;
                 }
 

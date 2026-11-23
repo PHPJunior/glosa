@@ -29,7 +29,7 @@ class GetPublicTranslationsQuery
             $value = $key->values->firstWhere('locale_id', $localeModel->id)?->value;
 
             // Fallback to default locale if value is empty or null
-            if (empty($value) && $defaultLocale) {
+            if (($value === null || $value === '') && $defaultLocale) {
                 $value = $key->values->firstWhere('locale_id', $defaultLocale->id)?->value;
             }
 
