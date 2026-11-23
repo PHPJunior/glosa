@@ -54,7 +54,7 @@ class ImportExportController extends Controller
 
         $data = $this->exportTranslationsQuery->get(
             $validated['locale'],
-            $request->boolean('nested', null)
+            $request->has('nested') ? $request->boolean('nested') : null
         );
 
         $filename = "{$validated['locale']}.json";
